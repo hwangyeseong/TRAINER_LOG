@@ -92,6 +92,17 @@ class WorkoutCRUD:
                 print(f"반복 횟수:{record['reps']}회")
                 print(f"세트 수:{record['sets']}세트")
 
+                new_exercise = input("새로운 운동 종목: ").strip()
+
+                record["exercise"] = new_exercise
+
+                print("운동 종목 수정 완료!")
+                return
+
+                self.workout_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(self.workout_path, "w", encoding='utf-8') as file:
+                    json.dump(self.workout, file, ensure_ascii=False, indent=4)
+
         print("해당 기록 번호를 찾을 수 없습니다.")
 
 if __name__ =="__main__":
