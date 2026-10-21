@@ -1,0 +1,29 @@
+[
+    {
+        "record_id": 1,
+        "user_id": "user01",
+        "date": "2026-10-19",
+        "exercise": "벤치 프레스",
+        "weight": 60.0,
+        "reps": 10,
+        "sets": 4
+    },
+    {
+        "record_id": 2,
+        "user_id": "user02",
+        "date": "2026-10-19",
+        "exercise": "스쿼드",
+        "weight": 60.0,
+        "reps": 10,
+        "sets": 3
+    },
+    {
+        "record_id": 3,
+        "user_id": "user01",
+        "date": "2026-10-20",
+        "exercise": "랫풀다운",
+        "weight": 45.0,
+        "reps": 12,
+        "sets": 3
+    }
+]
