@@ -1,14 +1,5 @@
 [
     {
-        "record_id": 1,
-        "user_id": "user01",
-        "date": "2026-10-19",
-        "exercise": "벤치 프레스",
-        "weight": 60.0,
-        "reps": 10,
-        "sets": 4
-    },
-    {
         "record_id": 3,
         "user_id": "user01",
         "date": "2026-10-20",
@@ -52,5 +43,188 @@
         "weight": 50.0,
         "reps": 10,
         "sets": 4
+    },
+    {
+        "record_id": 8,
+        "user_id": "user06",
+        "date": "2026-10-23",
+        "exercise": "Bench Press",
+        "weight": 20.0,
+        "reps": 20,
+        "sets": 1
+    },
+    {
+        "record_id": 9,
+        "user_id": "user07",
+        "date": "2026-10-23",
+        "exercise": "Arnold Press",
+        "weight": 8.0,
+        "reps": 10,
+        "sets": [
+            {
+                "set": 1,
+                "weight": 5.0,
+                "reps": 20
+            },
+            {
+                "set": 2,
+                "weight": 7.0,
+                "reps": 15
+            },
+            {
+                "set": 3,
+                "weight": 8.0,
+                "reps": 10
+            },
+            {
+                "set": 4,
+                "weight": 8.0,
+                "reps": 10
+            }
+        ]
+    },
+    {
+        "record_id": 10,
+        "user_id": "user07",
+        "date": "2026-10-23",
+        "exercise": "Behind Overhead Press",
+        "weight": 10.0,
+        "reps": 20,
+        "sets": [
+            {
+                "set": 1,
+                "weight": 10.0,
+                "reps": 20
+            }
+        ]
+    },
+    {
+        "record_id": 11,
+        "user_id": "user08",
+        "date": "2026-10-23",
+        "exercise": "Box Squat",
+        "weight": 40.0,
+        "reps": 10,
+        "sets": [
+            {
+                "set": 1,
+                "weight": 20.0,
+                "reps": 10
+            },
+            {
+                "set": 2,
+                "weight": 40.0,
+                "reps": 10
+            },
+            {
+                "set": 3,
+                "weight": 40.0,
+                "reps": 10
+            }
+        ]
+    },
+    {
+        "record_id": 12,
+        "user_id": "user08",
+        "date": "2026-10-23",
+        "exercise": "Arm Pulldown",
+        "weight": 20.0,
+        "reps": 10,
+        "sets": [
+            {
+                "set": 1,
+                "weight": 20.0,
+                "reps": 10
+            }
+        ]
+    },
+    {
+        "record_id": 13,
+        "user_id": "user01",
+        "date": "2026-10-23",
+        "exercise": "Arm Pulldown",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 30.0,
+                "reps": 20
+            },
+            {
+                "set": 2,
+                "weight": 40.0,
+                "reps": 15
+            },
+            {
+                "set": 3,
+                "weight": 50.0,
+                "reps": 10
+            },
+            {
+                "set": 4,
+                "weight": 50.0,
+                "reps": 10
+            }
+        ]
+    },
+    {
+        "record_id": 14,
+        "user_id": "user01",
+        "date": "2026-10-23",
+        "exercise": "Back Extension",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 20.0,
+                "reps": 20
+            },
+            {
+                "set": 2,
+                "weight": 20.0,
+                "reps": 20
+            },
+            {
+                "set": 3,
+                "weight": 20.0,
+                "reps": 20
+            },
+            {
+                "set": 4,
+                "weight": 20.0,
+                "reps": 20
+            }
+        ]
+    },
+    {
+        "record_id": 15,
+        "user_id": "user02",
+        "date": "2026-10-23",
+        "exercise": "Bench Press",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 20.0,
+                "reps": 20
+            },
+            {
+                "set": 2,
+                "weight": 40.0,
+                "reps": 10
+            },
+            {
+                "set": 3,
+                "weight": 60.0,
+                "reps": 10
+            },
+            {
+                "set": 4,
+                "weight": 80.0,
+                "reps": 5
+            },
+            {
+                "set": 5,
+                "weight": 90.0,
+                "reps": 3
+            }
+        ]
     }
 ]

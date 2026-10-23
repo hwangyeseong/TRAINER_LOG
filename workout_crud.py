@@ -18,6 +18,55 @@ class WorkoutCRUD:
         with open(self.workout_path, "w", encoding="utf-8") as file:
             json.dump(self.workouts, file, ensure_ascii=False, indent=4)
 
+    def print_workout_record(self, record):
+        print("\n" + "=" * 54)
+        print(f" [기록 #{record['record_id']}] {record['exercise']}")
+        print(f" 회원 ID : {record['user_id']}")
+        print(f" 운동 날짜 : {record['date']}")
+        print("-"* 54)
+
+        print(f"{'세트' :<8}{'무게':<12}{'횟수':<10}{'볼륨'}")
+        print("-"*54)
+
+        total_volume = 0
+
+        if isinstance(record["sets"], list):
+            for set_record in record["sets"]:
+                set_num = set_record["set"]
+                weight = set_record["weight"]
+                reps = set_record["reps"]
+                volume = weight * reps
+
+                total_volume += volume
+
+                print(
+                    f"{set_num:<8}"
+                    f"{str(weight) + 'kg':<12}"
+                    f"{str(reps) + '회':<10}"
+                    f"{volume:,.1f}kg"
+                )
+            total_sets = len(record["sets"])
+
+        else:
+            weight = record["weight"]
+            reps = record["reps"]
+            total_sets = record["sets"]
+            total_volume = weight * reps * total_sets
+
+            for set_num in range(1, total_sets + 1):
+                print(
+                    f"{set_num:<8}"
+                    f"{str(weight) + 'kg':<12}"
+                    f"{str(reps) + '회':<10}"
+                    f"{weight * reps:,.1f}kg"
+                )
+        print("-"* 54)
+        print(
+            f"총 {total_sets}세트 | "
+            f"총 볼륨: {total_volume:.1f}kg"
+        )
+        print("="*54)
+
     def select_exercise(self):
         machine_path = self.workout_path.parent / "muscles.json"
 
@@ -93,68 +142,114 @@ class WorkoutCRUD:
 
     def show_workouts(self):
         print("\n===== 전체 운동 기록 조회=====")
+        
         if not self.workouts:
             print("등록된 운동 기록이 없습니다.")
             return
 
         for record in self.workouts:
-            print(f"기록 번호:{record['record_id']}")
-            print(f"회원 ID: {record['user_id']}")
-            print(f"운동 날짜:{record['date']}")
-            print(f"운동 종목:{record['exercise']}")
-            print(f"운동 무게:{record['weight']}kg")
-            print(f"반복 횟수:{record['reps']}회")
-            print(f"세트 수:{record['sets']}세트")    
-            print("-"*30)        
-        
-        print(f'전체 운동 기록 수 : {len(self.workouts)}개')
+            self.print_workout_record(record)
 
+        print(f"\n전체 운동 기록 수: {len(self.workouts)}개")
+
+    
     def register_workout(self):
-        print("===== 운동 기록 등록 =====")
+        print("\n===== 운동 기록 등록 =====")
 
+        # 회원 ID와 날짜는 처음 한 번만 입력
         user_id = input("회원 ID: ").strip()
         date = input("운동 날짜(YYYY-MM-DD): ").strip()
 
-        exercise = self.select_exercise()
-
-        if exercise is None:
-            print("운동 기록 등록을 취소합니다.")
-            return
-        
-        try:
-            weight = float(input("운동 무게(kg): "))
-            reps = int(input("반복 횟수: "))
-            sets = int(input("세트 수: "))
-
-        except ValueError:
-            print("숫자만 입력해주세요.")
+        if not user_id or not date:
+            print("회원 ID와 날짜는 비워둘 수 없습니다.")
             return
 
-        if weight < 0:
-            print("운동 무게는 0kg 이상이여야 합니다.")
-            return
+        count = 0
 
-        if reps <= 0 or sets <= 0:
-            print("반복 횟수와 세트 수는 1 이상이여야 합니다.")
-            return
+        # 운동을 여러 개 등록하기 위한 반복문
+        while True:
+            exercise = self.select_exercise()
 
-        next_id = max((record["record_id"] for record in self.workouts), default=0) + 1
-    
-        record = {
-            "record_id": next_id,
-            "user_id": user_id,
-            "date": date,
-            "exercise": exercise,
-            "weight": weight,
-            "reps": reps,
-            "sets": sets,
-        }
+            if exercise is None:
+                print("운동 선택을 취소했습니다.")
+                break
 
-        self.workouts.append(record)
+            print(f"\n===== {exercise} 세트 기록 =====")
 
-        self.save_workouts()
+            set_list = []
 
-        print("운동 기록 등록 완료!")
+            while True:
+                set_number = len(set_list) + 1
+
+                print(f"\n--- {set_number}세트 ---")
+
+                try:
+                    weight = float(input("운동 무게(kg): "))
+                    reps = int(input("반복 횟수: "))
+                except ValueError:
+                    print("숫자만 입력해주세요.")
+                    continue
+                    
+                if weight < 0 or reps <= 0:
+                    print("무게는 0 이상, 반복 횟수는 1 이상이어야 합니다.")
+                    continue
+
+                set_record = {
+                    "set": set_number,
+                    "weight": weight,
+                    "reps": reps
+                }
+
+                set_list.append(set_record)
+
+                while True:
+                    more_sets = input("세트를 추가하시겠습니까? (Y/N) ").strip().lower()
+
+                    if more_sets in ("y", "n"):
+                        break
+
+                    print("Y 또는 N을 입력해주세요.")
+
+                if more_sets == "n":
+                    break
+            
+            next_id = max(
+                (record["record_id"] for record in self.workouts),
+                default=0
+            ) + 1
+
+            record = {
+                "record_id": next_id,
+                "user_id": user_id,
+                "date": date,
+                "exercise": exercise,
+                "sets": set_list
+            }
+
+            self.workouts.append(record)
+            self.save_workouts()
+
+            count += 1
+
+            print(f"\n{exercise} 운동 기록 등록 완료!")
+
+            # 다른 운동을 추가할지 확인
+            while True:
+                again = input(
+                    "\n다른 운동을 추가하시겠습니까? (Y/N): "
+                ).strip().lower()
+
+                if again in ("y", "n"):
+                    break
+
+                print("Y 또는 N을 입력해주세요.")
+
+            if again == "n":
+                break
+
+        print("\n===== 운동 기록 등록 종료 =====")
+        print(f"이번에 등록한 운동 종목: {count}개")
+
 
     def search_workout(self):
         print("\n===== 회원별 운동 기록 조회 =====")
@@ -165,64 +260,93 @@ class WorkoutCRUD:
         for record in self.workouts:
             if record["user_id"] == user_id:
                 count += 1
-                print(f"\n[운동 기록 {count}]")
-                print(f"기록 번호:{record['record_id']}")
-                print(f"운동 날짜:{record['date']}")
-                print(f"운동 종목:{record['exercise']}")
-                print(f"운동 무게:{record['weight']}kg")
-                print(f"반복 횟수:{record['reps']}회")
-                print(f"세트 수:{record['sets']}세트")
+                self.print_workout_record(record)
 
         if count == 0:
             print("해당 회원의 운동 기록이 없습니다.")
+        else:
+            print(f"\n{user_id} 회원의 운동 기록: 총 {count}개")
 
     def update_workout(self):
         print("\n===== 운동 기록 수정 =====")
 
+        # 1. 수정 할 기록 번호 입력
         try:
             record_id = int(input("수정할 기록 번호: "))
         except ValueError:
             print("기록 번호는 숫자로 입력해주세요.")
             return
 
+        # 2. 기록 번호로 운동 찾기
         for record in self.workouts:
             if record["record_id"] == record_id:
-                print(f"운동 종목:{record['exercise']}")
-                print(f"운동 무게:{record['weight']}kg")
-                print(f"반복 횟수:{record['reps']}회")
-                print(f"세트 수:{record['sets']}세트")
+              
+                print("\n===== 수정 전 운동 기록 =====")
+                self.print_workout_record(record)
 
-                new_exercise = input("새로운 운동 종목: ").strip()
+                # 3. 기존 데이터 구조도 세트별 형태로 변환
+                if isinstance(record["sets"], list):
+                    set_list = record["sets"]
+                else:
+                    set_list = []
 
-                if not new_exercise:
-                    print("운동 종목은 비워둘 수 없습니다.")
-                    return
+                    for i in range(1, record["sets"] + 1):
+                        set_list.append({
+                            "set": i,
+                            "weight": record["weight"],
+                            "reps": record["reps"]
 
+                        })
+               
+                # 4. 수정할 세트 선택
                 try:
-                    new_weight = float(input("새로운 운동 무게(kg): "))
-                    new_reps = int(input("새로운 반복 횟수: "))
-                    new_sets = int(input("새로운 세트 수: "))
+                    set_number = int(input("\n수정할 세트 번호 (0: 취소): "))
                 except ValueError:
-                    print("무게, 반복 횟수, 세트 수는 숫자로 입력해주세요.")
+                    print("숫자만 입력해주세요.")
                     return
-                if new_weight < 0:
-                    print("운동 무게는 0kg 이상이어야 합니다.")
+                
+                if set_number ==  0:
+                    print("운동 기록 수정을 취소했습니다.")
                     return
-                if new_reps <= 0 or new_sets <= 0:
-                    print("반복 횟수와 세트 수는 1 이상어이야 합니다.")
+                if set_number < 1 or set_number > len(set_list):
+                    print("존재하지 않는 세트 번호입니다.")
+                    return
+                # 5. 새로운 무게와 횟수 입력
+                try:
+                    new_weight = float(
+                        input("새로운 운동 무게(kg): ")
+                    )
+                    new_reps = int(
+                        input("새로운 반복 횟수: ")
+                    )
+                except ValueError:
+                    print("숫자만 입력해주세요.")
                     return
 
-                record["exercise"] = new_exercise
-                record["weight"] = new_weight
-                record["reps"] = new_reps
-                record["sets"] = new_sets
+                if new_weight < 0 or new_reps <= 0:
+                    print("무게는 0 이상, 횟수는 1 이상이어야 합니다.")
+                    return
+                
+                # 6. 선택한 세트의 무게와 횟수 수정
+                set_list[set_number - 1]["weight"] = new_weight
+                set_list[set_number - 1]["reps"] = new_reps
 
+                # 7. 수정한 데이터를 운동 기록에 반영
+                record["sets"] = set_list
+
+                # 기존 데이터 구조의 중복 항목 제거
+                record.pop("weight", None)
+                record.pop("reps", None)
+
+                # 8. JSON 파일에 저장
                 self.save_workouts()
 
-                print("운동 기록 수정 완료!")
+                print("\n===== 운동 기록 수정 완료 =====")
+                self.print_workout_record(record)
                 return
 
         print("해당 기록 번호를 찾을 수 없습니다.")
+                
 
     def delete_workout(self):
         print("\n===== 운동 기록 삭제 =====")
@@ -230,29 +354,34 @@ class WorkoutCRUD:
         try:
             record_id = int(input("삭제할 기록 번호: "))
         except ValueError:
-            print("기록 번호는 숫자로 입력해 주세요.")
+            print("기록 번호는 숫자로 입력해주세요.")
             return
 
         for record in self.workouts:
-            if record.get("record_id") == record_id:
-                print(f"운동 종목: {record['exercise']}")
-                print(f"운동 무게: {record['weight']}kg")
-                print(f"운동 횟수: {record['reps']}회")
-                print(f"세트 수: {record['sets']}세트")
+            if record["record_id"] == record_id:
 
-                confirm = input("정말 삭제하시겠습니까? (y/n): ").strip().lower()
+                # 삭제할 운동 기록 보여주기
+                print("\n===== 삭제할 운동 기록 =====")
+                self.print_workout_record(record)
+
+                # 삭제 여부 확인
+                confirm = input(
+                    "\n정말 삭제하시겠습니까? (Y/N): "
+                ).strip().lower()
 
                 if confirm != "y":
                     print("운동 기록 삭제를 취소했습니다.")
                     return
 
+                # 기록 삭제 및 JSON 저장
                 self.workouts.remove(record)
                 self.save_workouts()
 
-                print("운동 기록 삭제 완료!")
+                print("\n운동 기록 삭제 완료!")
                 return
 
         print("해당 기록 번호를 찾을 수 없습니다.")
+
 
 def workout_menu(workout):
     while True:
