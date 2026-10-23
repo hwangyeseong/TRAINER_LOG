@@ -28,22 +28,49 @@ class WorkoutCRUD:
         with open(machine_path, "r", encoding="utf-8") as file:
             body_list = json.load(file)
 
+        # 운동 부위 5가지
+        muscle_list = ["Core", "Back", "Chest", "Shoulders", "Arms", "Legs"]
+
+        print("\n===== 운동 부위 선택 =====")
+
+        for index, muscle in enumerate(muscle_list, start =1):
+            print(f"{index}. {muscle}")
+
+        print("0. 취소")
+
+        while True:
+            choice = input("운동 부위 번호 선택").strip()
+
+            if choice == "0":
+                return None
+            if not choice.isdigit():
+                print("숫자만 입력해주세요.")
+                continue
+            number = int(choice)
+
+            if 1 <= number <= len(muscle_list):
+                selected_muscle = muscle_list[number -1]
+                break
+
+            print("목록에 있는 번호를 선택해주세요.")
+
+        # 선택한 운동 부위의 세부 운동 찾기
         exercise_list = []
 
         for body in body_list:
-            muscle = body["muscle"]
-
-            for machine in body["machines"]:
-                exercise_list.append((muscle,machine))
+            if body["muscle"] == selected_muscle:
+                exercise_list.extend(body["machines"])
 
         if not exercise_list:
-            print("등록된 운동 종목이 없습니다.")
+            print(f"{selected_muscle}에 등록된 운동이 없습니다.")
             return None
 
-        print("\n===== 운동 종목 선택 =====")
+        print(f"\n===== {selected_muscle} 운동 종목 선택 =====")
 
-        for index, (muscle,machine) in enumerate(exercise_list, start =1):
-            print(f'{index}. [{muscle}] {machine}')
+        for index, exercise in enumerate(exercise_list, start =1):
+            print(f'{index}. {exercise}')
+
+        print("0 취소")
 
         while True:
             choice = input("운동 번호 선택 (0: 취소): ").strip()
@@ -58,7 +85,7 @@ class WorkoutCRUD:
             number = int(choice)
 
             if 1 <= number <= len(exercise_list):
-                exercise =exercise_list[number - 1][1]
+                exercise =exercise_list[number - 1]
                 print(f'선택한 운동: {exercise}')
                 return exercise
         

@@ -9,21 +9,48 @@
         "sets": 4
     },
     {
-        "record_id": 2,
-        "user_id": "user02",
-        "date": "2026-10-19",
-        "exercise": "스쿼드",
-        "weight": 60.0,
-        "reps": 10,
-        "sets": 3
-    },
-    {
         "record_id": 3,
         "user_id": "user01",
         "date": "2026-10-20",
-        "exercise": "랫풀다운",
-        "weight": 45.0,
-        "reps": 12,
-        "sets": 3
+        "exercise": "시티드로우",
+        "weight": 100.0,
+        "reps": 4,
+        "sets": 4
+    },
+    {
+        "record_id": 4,
+        "user_id": "user02",
+        "date": "2026-10-22",
+        "exercise": "풀업",
+        "weight": 50.0,
+        "reps": 10,
+        "sets": 4
+    },
+    {
+        "record_id": 5,
+        "user_id": "user01",
+        "date": "2026-10-22",
+        "exercise": "Bench Dip",
+        "weight": 50.0,
+        "reps": 20,
+        "sets": 4
+    },
+    {
+        "record_id": 6,
+        "user_id": "usero01",
+        "date": "2026-10-23",
+        "exercise": "Arm Pulldown",
+        "weight": 50.0,
+        "reps": 40,
+        "sets": 40
+    },
+    {
+        "record_id": 7,
+        "user_id": "user05",
+        "date": "2026-10-23",
+        "exercise": "Bench Press",
+        "weight": 50.0,
+        "reps": 10,
+        "sets": 4
     }
 ]
