@@ -12,6 +12,59 @@ class WorkoutCRUD:
         else:
             self.workouts = []
 
+    # 목록을 10개씩 보여주고 선택하는 공통 함수
+    def select_page(self, items, title, page_size=10):
+
+        if not items:
+            print("선택할 항목이 없습니다.")
+            return None
+
+        page = 0
+        max_page = (len(items) - 1) // page_size
+
+        while True:
+            start = page * page_size
+            end = start + page_size
+            page_list = items[start:end]
+
+            print(f"\n===== {title} =====")
+            print(f"페이지 {page + 1} / {max_page + 1}")
+
+            # 현재 페이지 목록 출력
+            for index, item in enumerate(page_list, start=start + 1):
+                print(f"{index}. {item}")
+
+            print("\n< 이전 페이지 | > 다음 페이지 | 0 취소")
+
+            choice = input("번호 선택: ").strip()
+
+            if choice == "<":
+                if page > 0:
+                    page -= 1
+                else:
+                    print("첫 번째 페이지입니다.")
+
+            elif choice == ">":
+                if page < max_page:
+                    page += 1
+                else:
+                    print("마지막 페이지입니다.")
+
+            elif choice == "0":
+                print("선택을 취소했습니다.")
+                return None
+
+            elif choice.isdigit():
+                number = int(choice)
+
+                if 1 <= number <= len(items):
+                    return items[number - 1]
+
+                print("목록에 있는 번호를 선택해주세요.")
+
+            else:
+                print("올바른 번호를 입력해주세요.")
+
     def save_workouts(self):
         self.workout_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -250,23 +303,55 @@ class WorkoutCRUD:
         print("\n===== 운동 기록 등록 종료 =====")
         print(f"이번에 등록한 운동 종목: {count}개")
 
-
+    # 회원별 운동 기록 조회
     def search_workout(self):
         print("\n===== 회원별 운동 기록 조회 =====")
 
+        # 1. 회원 ID 입력
         user_id = input("조회할 회원 ID: ").strip()
-        count = 0
 
-        for record in self.workouts:
-            if record["user_id"] == user_id:
-                count += 1
-                self.print_workout_record(record)
+        # 2. 해당 회원의 운동 기록만 가져오기
+        user_workouts = [
+            record for record in self.workouts
+            if record["user_id"] == user_id
+        ]
 
-        if count == 0:
+        if not user_workouts:
             print("해당 회원의 운동 기록이 없습니다.")
-        else:
-            print(f"\n{user_id} 회원의 운동 기록: 총 {count}개")
+            return
 
+        # 3. 운동한 날짜 목록 만들기 (중복 제거)
+        date_list = sorted(
+            {record["date"] for record in user_workouts},
+            reverse=True
+        )
+
+        # 4. 날짜 선택 (10개씩 페이지 표시)
+        selected_date = self.select_page(
+            date_list,
+            f"{user_id} 회원의 운동 날짜 선택"
+        )
+
+        if selected_date is None:
+            return
+
+        # 5. 선택한 날짜의 운동 기록 가져오기
+        date_workouts = [
+            record for record in user_workouts
+            if record["date"] == selected_date
+        ]
+
+        # 6. 해당 날짜의 운동 기록 출력
+        print(f"\n===== {selected_date} 운동 기록 =====")
+
+        for record in date_workouts:
+            self.print_workout_record(record)
+
+        print(f"\n총 운동 종목: {len(date_workouts)}개")
+
+        print(f"\n총 운동 종목: {len(date_workouts)}개")
+
+    # 운동 기록 수정    
     def update_workout(self):
         print("\n===== 운동 기록 수정 =====")
 
@@ -419,3 +504,4 @@ if __name__ == "__main__":
     workout = WorkoutCRUD(workout_path)
 
     workout_menu(workout)
+

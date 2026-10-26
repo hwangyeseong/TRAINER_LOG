@@ -167,34 +167,6 @@
         ]
     },
     {
-        "record_id": 14,
-        "user_id": "user01",
-        "date": "2026-10-23",
-        "exercise": "Back Extension",
-        "sets": [
-            {
-                "set": 1,
-                "weight": 20.0,
-                "reps": 20
-            },
-            {
-                "set": 2,
-                "weight": 20.0,
-                "reps": 20
-            },
-            {
-                "set": 3,
-                "weight": 20.0,
-                "reps": 20
-            },
-            {
-                "set": 4,
-                "weight": 20.0,
-                "reps": 20
-            }
-        ]
-    },
-    {
         "record_id": 15,
         "user_id": "user02",
         "date": "2026-10-23",
@@ -224,6 +196,47 @@
                 "set": 5,
                 "weight": 90.0,
                 "reps": 3
+            }
+        ]
+    },
+    {
+        "record_id": 16,
+        "user_id": "user15",
+        "date": "2026-10-26",
+        "exercise": "Cable Crunch",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 0.0,
+                "reps": 30
+            },
+            {
+                "set": 2,
+                "weight": 0.0,
+                "reps": 30
+            },
+            {
+                "set": 3,
+                "weight": 0.0,
+                "reps": 20
+            }
+        ]
+    },
+    {
+        "record_id": 17,
+        "user_id": "user15",
+        "date": "2026-10-26",
+        "exercise": "Arm Pulldown",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 40.0,
+                "reps": 20
+            },
+            {
+                "set": 2,
+                "weight": 40.0,
+                "reps": 20
             }
         ]
     }
