@@ -193,17 +193,70 @@ class WorkoutCRUD:
         
             print("목록에 있는 번호를 선택해주세요.")
 
+        # 전체 운동 기록 조회
     def show_workouts(self):
-        print("\n===== 전체 운동 기록 조회=====")
-        
+        print("\n===== 전체 운동 기록 조회 =====")
+
+        # 1. 운동 기록 존재 여부 확인
         if not self.workouts:
             print("등록된 운동 기록이 없습니다.")
             return
 
-        for record in self.workouts:
+        # 2. 운동 기록에 등록된 회원 ID 목록 생성
+        user_list = sorted({
+            record["user_id"]
+            for record in self.workouts
+        })
+
+        # 3. 회원 선택 (10개씩 페이지 표시)
+        selected_user = self.select_page(
+            user_list,
+            "운동 기록이 있는 회원 목록"
+        )
+
+        if selected_user is None:
+            return
+
+        # 4. 선택한 회원의 운동 기록 찾기
+        user_workouts = [
+            record for record in self.workouts
+            if record["user_id"] == selected_user
+        ]
+
+        # 5. 운동 날짜 목록 생성 (최신순)
+        date_list = sorted(
+            {record["date"] for record in user_workouts},
+            reverse=True
+        )
+
+        # 6. 날짜 선택 (10개씩 페이지 표시)
+        selected_date = self.select_page(
+            date_list,
+            f"{selected_user} 회원의 운동 날짜 선택"
+        )
+
+        if selected_date is None:
+            return
+
+        # 7. 선택한 날짜의 운동 기록 찾기
+        date_workouts = [
+            record for record in user_workouts
+            if record["date"] == selected_date
+        ]
+
+        # 8. 해당 날짜의 운동 기록 출력
+        print(
+            f"\n===== {selected_user} / "
+            f"{selected_date} 운동 기록 ====="
+        )
+
+        for record in date_workouts:
             self.print_workout_record(record)
 
-        print(f"\n전체 운동 기록 수: {len(self.workouts)}개")
+        # 9. 조회 결과 요약
+        print(f"\n회원 ID: {selected_user}")
+        print(f"운동 날짜: {selected_date}")
+        print(f"운동 종목 수: {len(date_workouts)}개")
 
     
     def register_workout(self):
@@ -351,121 +404,210 @@ class WorkoutCRUD:
 
         print(f"\n총 운동 종목: {len(date_workouts)}개")
 
-    # 운동 기록 수정    
+       # 운동 기록 수정
     def update_workout(self):
         print("\n===== 운동 기록 수정 =====")
 
-        # 1. 수정 할 기록 번호 입력
-        try:
-            record_id = int(input("수정할 기록 번호: "))
-        except ValueError:
-            print("기록 번호는 숫자로 입력해주세요.")
+        # 1. 회원 ID 입력
+        user_id = input("수정할 회원 ID: ").strip()
+
+        # 2. 해당 회원의 운동 기록 찾기
+        user_workouts = [
+            record for record in self.workouts
+            if record["user_id"] == user_id
+        ]
+
+        if not user_workouts:
+            print("해당 회원의 운동 기록이 없습니다.")
             return
 
-        # 2. 기록 번호로 운동 찾기
-        for record in self.workouts:
-            if record["record_id"] == record_id:
-              
-                print("\n===== 수정 전 운동 기록 =====")
-                self.print_workout_record(record)
+        # 3. 운동 날짜 목록 만들기
+        date_list = sorted(
+            {record["date"] for record in user_workouts},
+            reverse=True
+        )
 
-                # 3. 기존 데이터 구조도 세트별 형태로 변환
-                if isinstance(record["sets"], list):
-                    set_list = record["sets"]
-                else:
-                    set_list = []
+        # 4. 운동 날짜 선택
+        selected_date = self.select_page(
+            date_list,
+            f"{user_id} 회원의 운동 날짜 선택"
+        )
 
-                    for i in range(1, record["sets"] + 1):
-                        set_list.append({
-                            "set": i,
-                            "weight": record["weight"],
-                            "reps": record["reps"]
+        if selected_date is None:
+            return
 
-                        })
-               
-                # 4. 수정할 세트 선택
-                try:
-                    set_number = int(input("\n수정할 세트 번호 (0: 취소): "))
-                except ValueError:
-                    print("숫자만 입력해주세요.")
-                    return
-                
-                if set_number ==  0:
-                    print("운동 기록 수정을 취소했습니다.")
-                    return
-                if set_number < 1 or set_number > len(set_list):
-                    print("존재하지 않는 세트 번호입니다.")
-                    return
-                # 5. 새로운 무게와 횟수 입력
-                try:
-                    new_weight = float(
-                        input("새로운 운동 무게(kg): ")
-                    )
-                    new_reps = int(
-                        input("새로운 반복 횟수: ")
-                    )
-                except ValueError:
-                    print("숫자만 입력해주세요.")
-                    return
+        # 5. 선택한 날짜의 운동 기록 찾기
+        date_workouts = [
+            record for record in user_workouts
+            if record["date"] == selected_date
+        ]
 
-                if new_weight < 0 or new_reps <= 0:
-                    print("무게는 0 이상, 횟수는 1 이상이어야 합니다.")
-                    return
-                
-                # 6. 선택한 세트의 무게와 횟수 수정
-                set_list[set_number - 1]["weight"] = new_weight
-                set_list[set_number - 1]["reps"] = new_reps
+        # 6. 운동 종목 선택용 목록 만들기
+        exercise_list = [
+            f"[기록 #{record['record_id']}] {record['exercise']}"
+            for record in date_workouts
+        ]
 
-                # 7. 수정한 데이터를 운동 기록에 반영
-                record["sets"] = set_list
+        selected_exercise = self.select_page(
+            exercise_list,
+            f"{selected_date} 운동 종목 선택"
+        )
 
-                # 기존 데이터 구조의 중복 항목 제거
-                record.pop("weight", None)
-                record.pop("reps", None)
+        if selected_exercise is None:
+            return
 
-                # 8. JSON 파일에 저장
-                self.save_workouts()
+        # 7. 선택한 운동 기록 가져오기
+        selected_index = exercise_list.index(selected_exercise)
+        record = date_workouts[selected_index]
 
-                print("\n===== 운동 기록 수정 완료 =====")
-                self.print_workout_record(record)
-                return
+        print("\n===== 수정 전 운동 기록 =====")
+        self.print_workout_record(record)
 
-        print("해당 기록 번호를 찾을 수 없습니다.")
-                
+        # 8. 기존 데이터도 세트별 구조로 변환
+        if isinstance(record["sets"], list):
+            set_list = record["sets"]
+        else:
+            set_list = []
 
+            for i in range(1, record["sets"] + 1):
+                set_list.append({
+                    "set": i,
+                    "weight": record["weight"],
+                    "reps": record["reps"]
+                })
+
+        # 9. 수정할 세트 선택
+        try:
+            set_number = int(
+                input("\n수정할 세트 번호 (0: 취소): ")
+            )
+        except ValueError:
+            print("숫자만 입력해주세요.")
+            return
+
+        if set_number == 0:
+            print("운동 기록 수정을 취소했습니다.")
+            return
+
+        if not 1 <= set_number <= len(set_list):
+            print("존재하지 않는 세트 번호입니다.")
+            return
+
+        # 10. 새로운 무게와 횟수 입력
+        try:
+            new_weight = float(
+                input("새로운 운동 무게(kg): ")
+            )
+
+            new_reps = int(
+                input("새로운 반복 횟수: ")
+            )
+
+        except ValueError:
+            print("숫자만 입력해주세요.")
+            return
+
+        if new_weight < 0 or new_reps <= 0:
+            print("무게는 0 이상, 횟수는 1 이상이어야 합니다.")
+            return
+
+        # 11. 선택한 세트 수정
+        set_list[set_number - 1]["weight"] = new_weight
+        set_list[set_number - 1]["reps"] = new_reps
+
+        # 12. 수정된 데이터를 기록에 반영
+        record["sets"] = set_list
+
+        # 이전 데이터 구조의 중복 항목 제거
+        record.pop("weight", None)
+        record.pop("reps", None)
+
+        # 13. JSON 파일에 저장
+        self.save_workouts()
+
+        print("\n===== 운동 기록 수정 완료 =====")
+        self.print_workout_record(record)
+                     
+
+        # 운동 기록 삭제
     def delete_workout(self):
         print("\n===== 운동 기록 삭제 =====")
 
-        try:
-            record_id = int(input("삭제할 기록 번호: "))
-        except ValueError:
-            print("기록 번호는 숫자로 입력해주세요.")
+        # 1. 회원 ID 입력
+        user_id = input("삭제할 회원 ID: ").strip()
+
+        # 2. 해당 회원의 운동 기록 찾기
+        user_workouts = [
+            record for record in self.workouts
+            if record["user_id"] == user_id
+        ]
+
+        if not user_workouts:
+            print("해당 회원의 운동 기록이 없습니다.")
             return
 
-        for record in self.workouts:
-            if record["record_id"] == record_id:
+        # 3. 운동 날짜 목록 만들기 (최신 날짜순)
+        date_list = sorted(
+            {record["date"] for record in user_workouts},
+            reverse=True
+        )
 
-                # 삭제할 운동 기록 보여주기
-                print("\n===== 삭제할 운동 기록 =====")
-                self.print_workout_record(record)
+        # 4. 운동 날짜 선택
+        selected_date = self.select_page(
+            date_list,
+            f"{user_id} 회원의 운동 날짜 선택"
+        )
 
-                # 삭제 여부 확인
-                confirm = input(
-                    "\n정말 삭제하시겠습니까? (Y/N): "
-                ).strip().lower()
+        if selected_date is None:
+            print("운동 기록 삭제를 취소했습니다.")
+            return
 
-                if confirm != "y":
-                    print("운동 기록 삭제를 취소했습니다.")
-                    return
+        # 5. 선택한 날짜의 운동 기록 찾기
+        date_workouts = [
+            record for record in user_workouts
+            if record["date"] == selected_date
+        ]
 
-                # 기록 삭제 및 JSON 저장
-                self.workouts.remove(record)
-                self.save_workouts()
+        # 6. 운동 종목 목록 만들기
+        exercise_list = [
+            f"[기록 #{record['record_id']}] {record['exercise']}"
+            for record in date_workouts
+        ]
 
-                print("\n운동 기록 삭제 완료!")
-                return
+        # 7. 삭제할 운동 종목 선택
+        selected_exercise = self.select_page(
+            exercise_list,
+            f"{selected_date} 삭제할 운동 종목 선택"
+        )
 
-        print("해당 기록 번호를 찾을 수 없습니다.")
+        if selected_exercise is None:
+            print("운동 기록 삭제를 취소했습니다.")
+            return
+
+        # 8. 선택한 운동 기록 가져오기
+        selected_index = exercise_list.index(selected_exercise)
+        record = date_workouts[selected_index]
+
+        # 9. 삭제할 기록 상세정보 출력
+        print("\n===== 삭제할 운동 기록 =====")
+        self.print_workout_record(record)
+
+        # 10. 삭제 여부 확인
+        confirm = input(
+            "\n정말 삭제하시겠습니까? (Y/N): "
+        ).strip().lower()
+
+        if confirm != "y":
+            print("운동 기록 삭제를 취소했습니다.")
+            return
+
+        # 11. 선택한 기록만 삭제
+        self.workouts.remove(record)
+
+        # 12. JSON 파일에 저장
+        self.save_workouts()
+
+        print("\n운동 기록 삭제 완료!")
 
 
 def workout_menu(workout):
