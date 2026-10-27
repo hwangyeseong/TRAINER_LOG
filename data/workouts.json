@@ -239,5 +239,61 @@
                 "reps": 20
             }
         ]
+    },
+    {
+        "record_id": 18,
+        "user_id": "user16",
+        "date": "2026-10-27",
+        "exercise": "Bench Dip",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 50.0,
+                "reps": 40
+            },
+            {
+                "set": 2,
+                "weight": 40.0,
+                "reps": 30
+            },
+            {
+                "set": 3,
+                "weight": 30.0,
+                "reps": 20
+            },
+            {
+                "set": 4,
+                "weight": 10.0,
+                "reps": 10
+            }
+        ]
+    },
+    {
+        "record_id": 19,
+        "user_id": "user16",
+        "date": "2026-10-27",
+        "exercise": "Bench Press",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 20.0,
+                "reps": 20
+            },
+            {
+                "set": 2,
+                "weight": 30.0,
+                "reps": 30
+            },
+            {
+                "set": 3,
+                "weight": 40.0,
+                "reps": 10
+            },
+            {
+                "set": 4,
+                "weight": 50.0,
+                "reps": 10
+            }
+        ]
     }
 ]
