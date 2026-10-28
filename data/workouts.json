@@ -54,36 +54,6 @@
         "sets": 1
     },
     {
-        "record_id": 9,
-        "user_id": "user07",
-        "date": "2026-10-23",
-        "exercise": "Arnold Press",
-        "weight": 8.0,
-        "reps": 10,
-        "sets": [
-            {
-                "set": 1,
-                "weight": 5.0,
-                "reps": 20
-            },
-            {
-                "set": 2,
-                "weight": 7.0,
-                "reps": 15
-            },
-            {
-                "set": 3,
-                "weight": 8.0,
-                "reps": 10
-            },
-            {
-                "set": 4,
-                "weight": 8.0,
-                "reps": 10
-            }
-        ]
-    },
-    {
         "record_id": 10,
         "user_id": "user07",
         "date": "2026-10-23",
@@ -161,7 +131,7 @@
             },
             {
                 "set": 4,
-                "weight": 50.0,
+                "weight": 55.0,
                 "reps": 10
             }
         ]
