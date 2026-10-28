@@ -1,0 +1,30 @@
+[
+    {
+        "record_id": 1,
+        "user_id": "tjd8909",
+        "date": "2026-10-28",
+        "exercise": "Ab Wheel",
+        "sets": [
+            {
+                "set": 1,
+                "weight": 4.0,
+                "reps": 50
+            },
+            {
+                "set": 2,
+                "weight": 4.0,
+                "reps": 50
+            },
+            {
+                "set": 3,
+                "weight": 3.0,
+                "reps": 40
+            },
+            {
+                "set": 4,
+                "weight": 2.0,
+                "reps": 4
+            }
+        ]
+    }
+]
